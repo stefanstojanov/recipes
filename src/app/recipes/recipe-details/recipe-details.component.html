@@ -1,0 +1,64 @@
+<app-loader *ngIf="!loaded; else recipeDetails"></app-loader>
+
+<div class="container">
+  <div *ngIf="error !== null" class="alert alert-danger" role="alert">
+    An error has occurred!
+  </div>
+</div>
+
+<ng-template #recipeDetails>
+  <div class="container-fluid">
+    <div class="row row-eq-height p-2">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 mb-3">
+        <div class="card text-center">
+          <div class="card-body">
+            <h1 class="card-title">
+              {{ recipe.name }}
+            </h1>
+            <h4 class="card-subtitle m-2 text-muted">
+              Source: {{ recipe.source }}
+            </h4>
+            <h4 class="card-subtitle m-2">
+              Preparation time:
+              <ng-container *ngIf="recipe.prepTime.hours >= 1">
+                {{ recipe.prepTime.hours }}
+                <span *ngIf="recipe.prepTime.hours === 1; else hours">hour</span>
+
+                <ng-template #hours>
+                  <span>hours</span>
+                </ng-template>
+              </ng-container>
+
+              {{ recipe.prepTime.minutes }} minutes
+            </h4>
+            <h4 class="card-subtitle m-2">
+              Ingredients needed:
+            </h4>
+            <ul class="list-group m-2">
+              <li class="list-group-item"
+                  *ngFor="let ingredient of recipe.ingredients">
+                {{ ingredient.quantity }} {{ ingredient.name }}
+              </li>
+            </ul>
+            <button class="btn btn-danger"
+                    (click)="deleteRecipe(recipe._id)">
+              Delete recipe
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+              Preparation instructions
+            </h5>
+            <p class="card-text">
+              {{ recipe.prepInstructions }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

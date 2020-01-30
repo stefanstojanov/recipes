@@ -1,0 +1,153 @@
+<app-loader *ngIf="!loaded; else recipeEntry"></app-loader>
+
+<div class="container">
+  <div *ngIf="error !== null" class="alert alert-danger" role="alert">
+    An error has occurred!
+  </div>
+</div>
+
+<ng-template #recipeEntry>
+  <div class="container-fluid p-4">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-xl-5">
+        <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+          <div class="form-group">
+            <input
+              type="text"
+              required
+              id="name"
+              class="form-control mb-2"
+              [(ngModel)]="recipe.name"
+              name="name"
+              placeholder="Recipe name">
+            <input
+              type="text"
+              id="source"
+              required
+              class="form-control mb-2"
+              [(ngModel)]="recipe.source"
+              name="source"
+              placeholder="Recipe source">
+            <div class="form-row">
+              <div class="col">
+                <label for="hours">Hours</label>
+                <input
+                  type="number"
+                  min="0"
+                  required
+                  name="hours"
+                  id="hours"
+                  class="form-control"
+                  [(ngModel)]="recipe.prepTime.hours">
+              </div>
+              <div class="col">
+                <label for="minutes">Minutes</label>
+                <input
+                  type="number"
+                  id="minutes"
+                  min="0"
+                  required
+                  name="minutes"
+                  class="form-control"
+                  [(ngModel)]="recipe.prepTime.minutes">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="col-6">
+                <label for="ingredient">Ingredient</label>
+                <select
+                  [(ngModel)]="selectedIngredient.name"
+                  class="form-control"
+                  name="ingredient"
+                  required
+                  id="ingredient">
+                  <option *ngFor="let ingredient of ingredientsList" [value]="ingredient.name">
+                    {{ ingredient.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label for="quantity">Quantity</label>
+                <input
+                  [(ngModel)]="selectedIngredient.quantity"
+                  type="number"
+                  name="quantity"
+                  id="quantity"
+                  required
+                  min="1"
+                  class="form-control">
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary form-control m-1"
+                (click)="addIngredient(selectedIngredient.name, selectedIngredient.quantity)">
+                Add
+              </button>
+            </div>
+            <textarea
+              [(ngModel)]="recipe.prepInstructions"
+              placeholder="Enter preparation instructions here"
+              class="form-control mt-2"
+              required
+              id="instructions"
+              name="instructions"></textarea>
+          </div>
+          <p *ngIf="!validation()" class="btn btn-danger mt-1 mb-1 w-100">
+            Please fill out the fields and add at least one ingredient before continuing!
+          </p>
+          <button
+            type="submit"
+            class="btn btn-primary w-100"
+            [disabled]="!validation()">
+            Add recipe
+          </button>
+        </form>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7 col-xl-7">
+        <div class="card text-center">
+          <div class="card-body">
+            <h1 class="card-title">
+              Name: {{ recipe.name }}
+            </h1>
+            <h4 class="card-subtitle m-2 text-muted">
+              Source: {{ recipe.source }}
+            </h4>
+            <h4 class="card-subtitle m-2">
+              Preparation time:
+              <ng-container *ngIf="recipe.prepTime.hours >= 1">
+                {{ recipe.prepTime.hours }}
+                <span *ngIf="recipe.prepTime.hours === 1; else hours">hour</span>
+
+                <ng-template #hours>
+                  <span>hours</span>
+                </ng-template>
+              </ng-container>
+
+              {{ recipe.prepTime.minutes }} minutes
+            </h4>
+            <h4 class="card-subtitle m-2">
+              Ingredients needed:
+            </h4>
+            <ul class="list-group m-2">
+              <li class="list-group-item"
+                  *ngFor="let ingredient of selectedIngredients">
+               <div class="row">
+                 <div class="col-8">
+                   <h5>
+                     {{ ingredient.quantity }} {{ ingredient.name }}
+                   </h5>
+                 </div>
+                 <div class="col-4">
+                   <button (click)="removeIngredient(ingredient)" class="btn btn-danger">
+                     Remove
+                   </button>
+                 </div>
+               </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

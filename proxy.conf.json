@@ -1,0 +1,7 @@
+{
+  "/api/*": {
+    "target": "https://api-recipes.herokuapp.com",
+    "secure": true,
+    "changeOrigin": true
+  }
+}

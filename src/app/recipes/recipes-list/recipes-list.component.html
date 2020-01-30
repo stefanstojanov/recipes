@@ -1,0 +1,91 @@
+<app-loader *ngIf="!loaded; else recipeList"></app-loader>
+
+<div class="container">
+  <div *ngIf="error !== null" class="alert alert-danger" role="alert">
+    An error has occurred!
+  </div>
+</div>
+
+<ng-template #recipeList>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Source</th>
+            <th scope="col">Num. Ingredients</th>
+            <th scope="col">Ingredients</th>
+            <th scope="col">Preparation instructions</th>
+            <th scope="col">Preparation time</th>
+            <th scope="col">View</th>
+            <th scope="col">Delete</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let recipe of recipes">
+            <td>
+              {{ recipe._id }}
+            </td>
+            <td>
+              {{ recipe.name }}
+            </td>
+            <td>
+              {{ recipe.source }}
+            </td>
+            <td>
+              {{ recipe.ingredients.length }}
+            </td>
+            <td>
+
+              <ng-container *ngIf="recipe.ingredients.length > 3; else fullIngredients">
+                <span *ngFor="let ingredient of recipe.ingredients let isLast=last">
+                {{ ingredient.name }}<span *ngIf="!isLast">,</span>
+                </span>...
+              </ng-container>
+
+              <ng-template #fullIngredients>
+                <ng-container>
+                  <span *ngFor="let ingredient of recipe.ingredients; let isLast = last; let i = index">
+                    <div *ngIf="i < 3">
+                      <span>
+                        {{ ingredient.name }}<span *ngIf="!isLast">,</span>
+                      </span>
+                    </div>
+                  </span>
+                </ng-container>
+              </ng-template>
+
+            </td>
+            <td>
+                {{ shortenInstructions(recipe.prepInstructions) }}
+            </td>
+            <td>
+              <ng-container *ngIf="recipe.prepTime.hours >= 1">
+                {{ recipe.prepTime.hours }}
+                <span *ngIf="recipe.prepTime.hours === 1; else hours">hour</span>
+
+                <ng-template #hours>
+                  <span>hours</span>
+                </ng-template>
+              </ng-container>
+
+              {{ recipe.prepTime.minutes }} minutes
+            </td>
+            <td>
+              <button class="btn btn-primary"
+                      [routerLink]="'/recipeDetails/' + recipe._id">View</button>
+            </td>
+            <td>
+              <button class="btn btn-danger"
+                      (click)="deleteRecipe(recipe._id)">Delete</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</ng-template>
