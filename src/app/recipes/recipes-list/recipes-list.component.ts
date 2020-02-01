@@ -43,16 +43,18 @@ export class RecipesListComponent implements OnInit {
   }
 
   deleteRecipe(id: string) {
-    this.recipeService.deleteRecipe(id)
-      .subscribe(
-        (response) => {
-          alert(response.message);
-          this.getRecipes();
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
+    if (confirm('Are you sure you want to delete this recipe?')) {
+      this.recipeService.deleteRecipe(id)
+        .subscribe(
+          (response) => {
+            alert(response.message);
+            this.getRecipes();
+          },
+          (error) => {
+            this.error = error;
+          }
+        );
+    }
   }
 
 }
